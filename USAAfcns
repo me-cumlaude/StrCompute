@@ -1,0 +1,180 @@
+	function usaaOutput(byVal)
+	{
+		document.getElementById("usaaOutlog").innerHTML=byVal;
+	}
+	//This is to test operands at the start or end
+	function usaaStartsEnds(byRef,inv,bln)
+	{
+		if((byRef.charAt(0)==inv)||((byRef.charAt(byRef.length-1)==inv)&&(bln=="false")))
+			return true;
+		else
+			return false;
+	}
+	function usaaNoWhite(byVal)
+	{
+		byVal=byVal.toUpperCase();
+		return byVal.replace(/\s+/g,"");
+	}
+	function usaaSqrt(byVal)
+	{
+		return byVal.replace("SQRT","Math.sqrt");
+	}
+	function usaaCalculate()
+	{
+		with(document.forms["usaaCompute"]["usaaInput"])
+		{
+			value=usaaNoWhite(value);
+			usaaOutput(value+" => "+usaaCalculator(value));
+		}
+	}
+	//The main logic to compute, Manly Jr B. Valera 12Sept2016
+	function usaaCalculator(byVal)
+	{
+		var exp=/\d+/g; //regExp for numbers
+		var opr=/\D+/g; //regExp for operations
+		var arr=[];     //push to numbers array
+		var ary=[];     //push to operations array
+		var num;
+		//This is to test + -, 0 will be attached for default
+		if((usaaStartsEnds(byVal,"+","true"))||(usaaStartsEnds(byVal,"-","true")))
+			byVal="0"+byVal;
+		if((usaaStartsEnds(byVal,"+","false"))||(usaaStartsEnds(byVal,"-","false")))
+			byVal+="0";
+
+		//This is to test not allowing / * at the start or end
+		if((usaaStartsEnds(byVal,"/","true"))||(usaaStartsEnds(byVal,"/","false")))
+			return "Invalid input";
+		else if((usaaStartsEnds(byVal,"*","true"))||(usaaStartsEnds(byVal,"*","false")))
+			return "Invalid input";
+
+		//Arrays filing
+		while((num=exp.exec(byVal))!=null)
+		{
+			arr.push(num[0]);
+		}
+		while((num=opr.exec(byVal))!=null)
+		{
+			ary.push(num[0]);
+		}
+		//No Math.pow to interpret, then go
+		if(byVal.indexOf("^")<0)
+			return usaaTryCatchEx(usaaSqrt(byVal));
+		else
+		{
+			if((usaaStartsEnds(byVal,"^","true"))||(usaaStartsEnds(byVal,"^","false")))
+				return "Invalid input";
+			else
+			{
+				//After testing ^ at the start or end, allow Math.pow interpret
+				var str="";
+				var tmp="";
+				var fnd=false;
+				for(i=0,j=-1;i<ary.length;i++)
+				{
+					if(ary[i]=="^")
+					{
+						if(fnd)
+						{
+							return "Invalid input";
+							break;
+						}
+						if(tmp=="0-")
+							str="Math.pow(-"+arr[i]+","+arr[i+1]+")";
+						else
+							str+="Math.pow("+arr[i]+","+arr[i+1]+")";
+						fnd=true;
+					}
+					else
+					{
+
+						if(fnd)
+						{
+							fnd=false;
+							if((i!=ary.length)&&(ary[i+1]!="^"))
+							{
+								str+=ary[i]+arr[i+1];
+								j=i+1;
+							}
+							if((i!=ary.length)&&(ary[i+1]=="^"))
+								str+=ary[i];
+						}
+						else
+						{
+							if(i==j)
+							{
+								if((i!=ary.length)&&(ary[i+1]!="^"))
+								{
+									str+=ary[i]+arr[i+1];
+									j=i+1;
+								}
+								if((i!=ary.length)&&(ary[i+1]=="^"))
+									str+=ary[i];
+							}
+							else
+								str+=arr[i]+ary[i];
+						}
+					}
+					tmp=str;
+				}
+				return usaaTryCatchEx(usaaSqrt(str));
+			}
+		}
+	}
+	//This is to test non-captured Math under main logic above
+	function usaaTryCatchEx(byRef)
+	{
+		try
+		{
+			return eval(byRef);
+		}
+		catch(err)
+		{
+			return "Invalid input";
+		}
+	}
+	//This is to test SQRT
+	function usaaToggleFltr(byRef,bln)
+	{
+		with(document)
+		{
+			if(bln=="true")
+			{
+				forms["usaaCompute"]["usaaInput"].value=usaaNoWhite(forms["usaaCompute"]["usaaInput"].value);
+				forms["usaaCompute"]["usaaSQRT"].value="false";
+				getElementById("usaaLbl").innerHTML="YES - Mozilla and Internet Explorer";
+				byRef.innerHTML="SQRT() off";
+			}
+			else
+			{
+				forms["usaaCompute"]["usaaInput"].value=usaaNoWhite(forms["usaaCompute"]["usaaInput"].value);
+				byRef.innerHTML="sqrt() ON";
+				getElementById("usaaLbl").innerHTML="<b>off</b> - this if for <i>SQRT()</i><br />&nbsp;&nbsp; spaces will be trimmed at once";
+				forms["usaaCompute"]["usaaSQRT"].value="true";
+			}
+		}
+	}
+	function usaaClear()
+	{
+		document.forms["usaaCompute"]["usaaInput"].value="";
+		usaaOutput("");
+	}
+	//This is to test valid inputs and separate SQRT
+	function usaaAllowed(evt,bln)
+	{
+		if(bln=="true")
+			return true;
+		else		{
+		var key;
+		var keyChar;
+
+		return evt.charCode === 0 || /[0-9|^\/*+-]/.test(String.fromCharCode(evt.charCode));
+		if(window.event)
+			key=evt.charCode;
+		else if(e)
+			key=e.which;
+
+		if(key==8)
+			return true;
+		keyChar=String.fromCharCode(key);
+		return /[0-9|^\/*+-]/.test(keyChar);		}
+	}
