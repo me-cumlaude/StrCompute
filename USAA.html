@@ -1,0 +1,644 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html><head>
+	<script type="text/javascript"> function clickIE4(){ if (event.button==2){ return false; } } function clickNS4(e){ if (document.layers||document.getElementById&&!document.all){ if (e.which==2||e.which==3){ return false; } } } if (document.layers){ document.captureEvents(Event.MOUSEDOWN); document.onmousedown=clickNS4; } else if (document.all&&!document.getElementById){ document.onmousedown=clickIE4; } document.oncontextmenu=new Function("return false") </script>
+	<script type='text/javascript'>	var isCtrl=false;
+	document.onkeyup=function(e)	{
+		if(e.which==17)			isCtrl=false;	}
+	document.onkeydown=function(e)	{
+		if(e.which==17)			isCtrl=true;
+		if((e.which==85)||(e.which==67)&&isCtrl==true)			return false;	}
+	var isNS = (navigator.appName=="Netscape")?1:0;
+	if(navigator.appName=="Netscape") document.captureEvents(Event.MOUSEDOWN||Event.MOUSEUP);
+	function mischandler(){		return false;	}
+	function mousehandler(e){
+		var myevent=(isNS)?e:event;
+		var eventbutton=(isNS)?myevent.which:myevent.button;
+		if((eventbutton==2)||(eventbutton==3)) return false;
+	}	document.oncontextmenu=mischandler;	document.onmousedown=mousehandler;	document.onmouseup=mousehandler;	</script>	<title>USAA.html</title>
+	<script type="text/javascript">	<!--
+	function usaaOutput(byVal)	{		document.getElementById("usaaOutlog").innerHTML=byVal;	}
+	//This is to test operands at the start or end
+	function usaaStartsEnds(byRef,inv,bln)	{
+		if((byRef.charAt(0)==inv)||((byRef.charAt(byRef.length-1)==inv)&&(bln=="false")))
+			return true;
+		else
+			return false;	}
+	function usaaNoWhite(byVal)	{		byVal=byVal.toUpperCase();		return byVal.replace(/\s+/g,"");	}	function usaaSqrt(byVal)	{		return byVal.replace("SQRT","Math.sqrt");	}
+	function usaaCalculate()	{		with(document.forms["usaaCompute"]["usaaInput"])
+		{			value=usaaNoWhite(value);			usaaOutput(value+" => "+usaaCalculator(value));		}	}
+	//The main logic to compute, Manly Jr B. Valera 12Sept2016
+	function usaaCalculator(byVal)	{
+		var exp=/\d+/g; //regExp for numbers
+		var opr=/\D+/g; //regExp for operations
+		var arr=[];     //push to numbers array
+		var ary=[];     //push to operations array
+		var num;
+		//This is to test + -, 0 will be attached for default
+		if((usaaStartsEnds(byVal,"+","true"))||(usaaStartsEnds(byVal,"-","true")))			byVal="0"+byVal;
+		if((usaaStartsEnds(byVal,"+","false"))||(usaaStartsEnds(byVal,"-","false")))			byVal+="0";
+
+		//This is to test not allowing / * at the start or end
+		if((usaaStartsEnds(byVal,"/","true"))||(usaaStartsEnds(byVal,"/","false")))
+			return "Invalid input";
+		else if((usaaStartsEnds(byVal,"*","true"))||(usaaStartsEnds(byVal,"*","false")))
+			return "Invalid input";
+
+		//Arrays filing
+		while((num=exp.exec(byVal))!=null)		{			arr.push(num[0]);		}
+		while((num=opr.exec(byVal))!=null)		{			ary.push(num[0]);		}
+		//No Math.pow to interpret, then go
+		if(byVal.indexOf("^")<0)
+			return usaaTryCatchEx(usaaSqrt(byVal));
+		else
+		{
+			if((usaaStartsEnds(byVal,"^","true"))||(usaaStartsEnds(byVal,"^","false")))
+				return "Invalid input";
+			else
+			{
+				//After testing ^ at the start or end, allow Math.pow interpret
+				var str="";				var tmp="";				var fnd=false;				for(i=0,j=-1;i<ary.length;i++)
+				{
+					if(ary[i]=="^")
+					{
+						if(fnd)
+						{
+							return "Invalid input";							break;
+						}
+						if(tmp=="0-")
+							str="Math.pow(-"+arr[i]+","+arr[i+1]+")";
+						else
+							str+="Math.pow("+arr[i]+","+arr[i+1]+")";
+						fnd=true;
+					}
+					else
+					{
+						if(fnd)
+						{
+							fnd=false;
+							if((i!=ary.length)&&(ary[i+1]!="^"))							{								str+=ary[i]+arr[i+1];
+								j=i+1;							}
+							if((i!=ary.length)&&(ary[i+1]=="^"))
+								str+=ary[i];
+						}
+						else
+						{
+							if(i==j)
+							{
+								if((i!=ary.length)&&(ary[i+1]!="^"))								{									str+=ary[i]+arr[i+1];
+									j=i+1;								}
+								if((i!=ary.length)&&(ary[i+1]=="^"))
+									str+=ary[i];
+							}
+							else
+								str+=arr[i]+ary[i];
+						}					}					tmp=str;				}
+				return usaaTryCatchEx(usaaSqrt(str));			}		}	}
+	//This is to test non-captured Math under main logic above
+	function usaaTryCatchEx(byRef)	{
+		try		{			return eval(byRef);		}
+		catch(err)		{			return "Invalid input";		}	}
+	//This is to test SQRT
+	function usaaToggleFltr(byRef,bln)
+	{		with(document)		{
+			if(bln=="true")
+			{				forms["usaaCompute"]["usaaInput"].value=usaaNoWhite(forms["usaaCompute"]["usaaInput"].value);
+				forms["usaaCompute"]["usaaSQRT"].value="false";				getElementById("usaaLbl").innerHTML="YES - Mozilla and Internet Explorer";
+				byRef.innerHTML="SQRT() off";			}
+			else
+			{				forms["usaaCompute"]["usaaInput"].value=usaaNoWhite(forms["usaaCompute"]["usaaInput"].value);
+				byRef.innerHTML="sqrt() ON";				getElementById("usaaLbl").innerHTML="<b>off</b> - this if for <i>SQRT()</i><br />&nbsp;&nbsp; spaces will be trimmed at once";
+				forms["usaaCompute"]["usaaSQRT"].value="true";			}		}	}
+	function usaaClear()	{		document.forms["usaaCompute"]["usaaInput"].value="";		usaaOutput("");	}
+	//This is to test valid inputs and separate SQRT
+	function usaaAllowed(evt,bln)	{
+		if(bln=="true")
+			return true;
+		else		{
+		var key;		var keyChar;
+
+		return evt.charCode === 0 || /[0-9|^\/*+-]/.test(String.fromCharCode(evt.charCode));
+		if(window.event)
+			key=evt.charCode;
+		else if(e)
+			key=e.which;
+
+		if(key==8)
+			return true;
+		keyChar=String.fromCharCode(key);		return /[0-9|^\/*+-]/.test(keyChar);		}	}
+
+	//The somewhat console display screen below
+	-->
+	</script>
+</head><body>
+<form name="usaaCompute" id="usaaCompute">
+	Rules:
+	<br />*Input filtering <span name="usaaLbl" id="usaaLbl">YES - Mozilla and Internet Explorer</span>
+	<br />*OK to start or end with + -
+	<br />*Invalid if starts or ends with ^ / * =
+	<br />*No decimals defaulted<br />
+	<br />Your statement here	<input type="hidden" name="usaaSQRT" id="usaaSQRT" value="false" />
+	<input type="text" name="usaaInput" id="usaaInput" value="" onKeyPress="return usaaAllowed(event,document.forms['usaaCompute']['usaaSQRT'].value);" />
+	<button type="button" onClick="usaaCalculate();">Calculate</button>
+	<button type="button" onClick="usaaToggleFltr(this,document.forms['usaaCompute']['usaaSQRT'].value);">SQRT() off</button>
+	<button type="button" onClick="usaaClear();">Reset</button>	<br />Results:</form>
+<div name="usaaOutlog" id="usaaOutlog" />
+</body></html>
